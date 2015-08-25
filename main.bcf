@@ -2238,12 +2238,6 @@
   </bcf:bibdata>
   <bcf:section number="0">
     <bcf:citekey order="1">latex</bcf:citekey>
-    <bcf:citekey order="2">latex</bcf:citekey>
-    <bcf:citekey order="3">latex</bcf:citekey>
-    <bcf:citekey order="4">latex</bcf:citekey>
-    <bcf:citekey order="5">latex</bcf:citekey>
-    <bcf:citekey order="6">latex</bcf:citekey>
-    <bcf:citekey order="7">latex</bcf:citekey>
   </bcf:section>
   <bcf:sortlist section="0" name="anyt" type="entry" sortscheme="anyt">
   <bcf:sorting>
