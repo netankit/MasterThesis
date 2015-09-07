@@ -117,17 +117,80 @@ An important step in the process is representing these reviews in such a way tha
 \begin{figure}[htb]
   \centering
   \includegraphics{figures/2_parsetree1}
-  \caption[Parse Tree Emaple]{Parse Tree for sentence "John hit the ball." }\label{fig:parsetree}
+  \caption[Syntactic Parse Tree Example]{Parse Tree for sentence "John hit the ball." }\label{fig:parsetree}
 \end{figure}
 \end{itemize} 
 
-Once we have perfromed feature extraction, then the next step is to feed the feature input to the machine learning algorithm. There are a number of very successful and efficient supervised machine learning methods. They are described briefly as follows:
+Once we have performed feature extraction, then the next step is to feed the feature input to the machine learning algorithm. There are a number of very successful and efficient supervised machine learning methods. They are described briefly as follows:
 \begin{itemize}
 \item \textbf{Na\"{i}ve Bayes:} A simple probabilistic classifier based on applying the Bayes' theorem with strong (naive) independence assumption.
 \item \textbf{Maximum Entropy (ME):}  A probabilistic model that estimates the conditional distribution of the class label
-\item \textbf{Support Vector Machines (SVM)} [Pang et al, EMNLP2002] A representation of the examples as points in space in which support vectors are computed to provide a best division of points/examples into categories
+\item \textbf{Support Vector Machines (SVM)} [Pang et al, EMNLP 2002] A representation of the examples as points in space in which support vectors are computed to provide a best division of points/examples into categories
 \item \textbf{Logistic Regression (LR) Model} [Pang \& Lee, ACL 2005] A LR model predicts the classes from a set of variables that may be continuous, discrete, or a mixture.
 \end{itemize}
 
-Since, the topics of this work is focused on exploring unsupervised word representations learned via deep learning and its application to the problem of sentiment analysis, we will not expand this discussion further.
-\subsection{Domain Adaptation}
+Since, the topics of this work are focused on exploring unsupervised word representations learned via deep learning and its application to the problem of sentiment analysis, we will not expand this discussion further.
+
+\subsection{Domain Dependency Problem and Domain Adaptation}
+When sentiment analysis is performed in real life, a common issue arises. A classifier trained using opinionated documents from domain A often performs poorly when tested on documents from domain B. There are genuine reasons for the same:
+\begin{enumerate}
+\item Reason 1: words used in different domains can be substantially different, e.g.
+\begin{itemize}
+\item Cars vs. Movies
+\item Cameras vs. Strollers
+\end{itemize}
+\item Reason 2: some words mean opposite in two domains, e.g.
+\begin{itemize}
+\item “unpredictable” may be negative in a car review, but positive in a movie review [Turney, ACL 2002]
+\item “cheap” may be positive in a travel/lodging review, but negative in a toys review
+\end{itemize}
+\end{enumerate}
+
+A common way to mitigate this issue is \textbf{Domain Adaptation}. It's actually a well studied problem. [Aue \& Gamon, RANLP 2005; Blitzer et al, ACL 2007; Yang et al, TREC 2006]. Some of the basic steps involved when perfroming domain adaptation is as follows:
+\begin{enumerate}
+\item Use labeled data from one domain and unlabeled data from both source the target domain and general opinion words as features
+\item Choose a set of pivot features which occur frequently in both domains
+\item Model correlations between the pivot features and all other features by training linear pivot predictors to predict occurrences of each pivot in the unlabeled data from both domains
+\end{enumerate}
+Recently, Jochim and Sch{\"u}tze  showed improvement in citation polarity classification using product reviews, by making use of Domain Adaptation, their out-of domain data was Amazon's Product Review data-set.
+
+\section{Sentence-Level Sentiment Analysis}
+Document level sentiment analysis is too coarse for most applications,\Smiley{} or, \Frowny{}? Example:
+\newline
+
+“I bought a new X phone yesterday. The voice quality is \textbf{super} and I really \textbf{like} it. However, it is a little bit \textbf{heavy}. Plus, the key pad is \textbf{too soft} and it \textbf{doesn’t feel comfortable}. I think the image quality is \textbf{good} enough but I am \textbf{not} sure about the battery life...”
+\begin{itemize}
+\item \textbf{Task:} Determine whether a sentence \textbf{s} is subjective or objective, and if \textbf{s} is subjective, determine whether its orientation is positive or negative
+\item \textbf{Assumptions:} The sentence is opinionated on a single object and the opinion is from a single opinion holder.
+\end{itemize}
+
+It is important to highlight that at sentence level, the syntax becomes of paramount importance. Hence we begin next with understanding syntactic patterns.
+
+\subsection{Syntactic Pattern Learning}
+In thier 2003 work, Riloff and Wiebe presented a bootstrapping process that learns linguistically rich extraction patterns for subjective (opinionated) expressions. The proposed process can be explained briefly as follows: 
+\begin{enumerate}
+\item Use high precision but low recall classifiers to automatically identify some subjective and objective sentences.
+\begin{itemize}
+\item A subjective classifier: the sentence contains two or more strong subjective clues
+\item An objective classifier: the sentence contains no strong subjective clues
+\item Based on manually collected single words and n-grams, which are good subjective clues
+\end{itemize}
+\item Learn a set of patterns from subjective and objective sentences identified above
+\begin{itemize}
+\item Syntactic templates are used to restrict the kinds of patterns to be discovered, e.g. <subject> active-verb $\Rightarrow$ the customer complained
+\end{itemize}
+\item The learned patterns are used to extract more subjective and objective sentences (the process can be repeated)
+\end{enumerate}  
+
+\section{Attribute - Level Sentiment Analysis}
+We have seen from some of the reviews example presented earlier that a positive or a negative labeleed document doesn't imply that the author likes or dislikes all attributes of the product. Thus, an interesting area of study is to analyze what attribute is most positively rated and which one is most negatively rated in a given product review. Also, in a general opinion corpus about a product, another interesting study is the percentage of positive to negative review for a given attribute. This is useful to determine, what exactly about the product do the people love or hate about the product. These attribute can be anything from product properties, the individual components or important topics etc. 
+
+\begin{figure}[htb]
+  \centering
+  \includegraphics[width=130mm]{figures/2_attributesa}
+  \caption[Sentiment Analysis - Attribute Level Example]{Attribute Level Sentiment Analysis Example }\label{fig:attributesa}
+\end{figure}
+
+The ~\autoref{fig:attributesa} shows an example of attribute level sentiment analysis. It displays the comparative analysis of two cellular phone and their individual attributes like positive or negative. Referring to the figure, one can clearly see that Cellphone 1 has overall positive sentiment, and it scores more positively for the attributes: picture, battery and camera. Where as, the size and weight of both the devices has received roughly similar reviews.
+
+Again, there are many methods proposed which allows us to extract these attributes automatically. for the sake of focusing on this work, we will curtail the discussion here.  
