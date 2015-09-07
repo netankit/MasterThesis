@@ -1,5 +1,101 @@
 \chapter{Sentiment Analysis}\label{chapter:sentiment}
+Till now we have studied about Sentiment Analysis with a general perspective. This chapter starts a more computational view of solving this problem. Before we begin discussing various methods, its important to understand the scope of the problem. 
+\section{Sentiment Analysis Levels}
+The sentiment analysis problem is not a single view problem, rather its can be viewed as multi-level problem. They are discussed as follows:
+\begin{itemize}
+\item \textbf{Document Level: }Identifying if the \textit{document} (product review, blog-post, forum post etc.) expresses opinions and if they do, classifying them as positive, negative or neutral. this takes into account the overall sentiment expressed by the opinion holder for the whole document.  
+\item \textbf{Sentence Level: }Identifying whether a single \textit{sentence} is positive, negative or neutral.
+\item \textbf{Attribute Level: }Extracting the \textit{object attributes} (image quality, zoom size etc.) that are subject of an opinion and the opinion orientation.
 
-\section{Supervised Machine Learning Techniques}
-\section{Unsupervised Machine Learning Techniques}
-\section{Domain Adaptation}
+It is important to note here that as the object becomes more granular, the intensity or difficulty of sentiment analysis increases.
+\end{itemize}
+
+\section{Document-Level Sentiment Analysis}
+We start with the traditional methods for document analysis sentiment analysis. It's important to keep in mind few assumptions which come along the way. 
+\begin{itemize}
+\item The document is opinionated on a single object
+\item the opinions are from a single opinion holder.
+\end{itemize}
+In real world data, these assumptions don't usually hold. But, for the sake of simplicity, we start with them to make the understanding of the methods easy.
+
+Also, more importantly,  this analysis is slightly different from the topic based text classification. In topic classification, heavy emphasis is given to the extraction of the topics. Thus, the \textit{topic words} become very important.  Whereas, in sentiment classification, the opinion words are more important. For example: wonderful, fabulous and terrible. 
+
+So to start with, a naive sentiment classifier can be based on identification and processing of these opinion words. Opinionated words are also known as sentiment words, opinion lexicon, polarity words or opinion bearing words. They are categorized into two types. First, \textbf{Base types}, for example:
+
+Positive: wonderful, elegant, amazing
+
+Negative: horrible disgusting poor
+
+Second, Comparative Types, for example: better, worse etc.
+
+\subsection{Counting Opinion Words}
+
+We start with a simple method. We try to count the opinion words in a given document. We are given an opinion word list which have both positive and negative words. And we assign an \textbf{orientation score} (-1,1) to all words in this list. Such that, \newline
+
+Positive opinion words (+1): great, amazing, love ...
+
+Negative opinion words (-1): hate, horrible, etc ...
+
+Strength of these words can also be defined [0,1] 
+\newline
+
+Thus the orientation score for the document, is the sum of the orientation scores of all opinion words found. Lets, take an example review and count the opinion words in the same and calculate overall orientation score for that review. Example:
+
+“My Canon Powershot takes \textbf{great} pictures! ... My friend had gotten one about a year ago and she \textbf{loves} it. So, after seeing her enthusiasm about it I decided to get one and I will never go back to any other camera. I absolutely \textbf{love} this camera. I believe that every person on Earth should own one of these. ... It is \textbf{amazing}! ... There is not one thing I \textbf{hate} about this product, which is strange because I am a very picky person! ...”
+
+Positive Sentiment Words: great (1), love (2) and amazing (1); Total: 4
+
+Negative Sentiment Words: hate (1); Total: 1
+\newline 
+
+Overall Sentiment Orientation for Review = 4-1 = 3 or \textbf{Positive Review Overall}!
+
+After looking at this analysis, lets ask ourselves a question. \textbf{Is simply counting the opinion words good enough?}
+
+The answer to that is \textbf{NO}! Lets' see why. Just take into consideration the last sentence in the above review. 
+
+There is \textbf{not} one thing I \textbf{hate} about this product. $\rightarrow$ Not Negative!
+\newline
+
+This is positive sentence overall. Since, we only captured our negative sentiment word \textbf{"hate"}, we labeled this sentence as negative, which is not true. Because of the negation indicator "not", the sentiment is reversed as in  \textbf{not ... hate} $\Rightarrow$ \textbf{like}.. Thus, an important lesson here is that we need to handle negation.  A common pattern of analysis is:
+\newline
+
+"not ... \textbf{negative}" $\rightarrow$ \textbf{positive}
+
+"never ... \textbf{negative}" $\rightarrow$ \textbf{positive}
+\newline
+
+Thus, the overall orientation score of the review is 4 +1 = 5 and not 3 as stated previously.
+\newline
+
+\textbf{A word of caution:} Negation must be handled very carefully! As, "not" in the pattern: "not only ... but also" does not change the orientation. 
+
+\subsection{Rule Based Method}
+
+Another method to compute the overall sentiment of a document is through handcrafted rules which are provided by a trained linguist, based on the identification of linguistic phenomenon which determine sentiment for a given language. We first discuss some related terminology:
+\begin{itemize}
+\item \textbf{Pattern / Rule:} A sequence of tokens.
+\item \textbf{Token:} An abstraction of a word, represented using lemma, polarity tag or a part of speech tag. There are two special tokens. TOPIC: an attribute (ex. weight, size etc.) and GAP\_DIGIT\_DIGIT: How many words can be skipping between two tokens to allow more tolerant matching. Ex GAP\_1\_2 
+\item \textbf{Polarity Tag:} positive, negative, neutral, NOT (negation)
+\item \textbf{POS Tag:} NN (Noun), VB (Verb), JJ (Adjective), RB (Adverb), IN (preposition) ...
+\end{itemize}
+
+Examples of some basic opinion rules, Label Sequential Pattern (LSP) Matching:
+\begin{itemize}
+\item Subject {like | adore | want | work} TOPIC $\rightarrow$ positive, e.g. – ``I like the old camera”
+\item Subject {is | are} {great | fantastic | simple | easy} $\rightarrow$ positive, e.g. – ``This camera is fantastic”
+\item TOPIC GAP\_0\_3 NOT work $\rightarrow$ negative, e.g. – ``The new search still does not work”
+\item Please do NOT VB $\rightarrow$ negative,e.g. – ``Please do not roll out this new search!”
+\item NOT GAP\_0\_3 {want | think | believe | need | get} $\rightarrow$ negative, e.g. – ``I do not want large size pictures in the Gallery window.”
+\item {get | bring | give | put | change} GAP\_0\_3 TOPIC GAP\_0\_3 back $\rightarrow$ positive
+– ``Please put the old search and browse back!”
+\end{itemize} 
+
+Although this method seems to work pretty well, but there is a fundamental limitation in putting it to use at large scale. Any rule based mining methods are computationally expensive. In this case, only a limited number of opinionated words are found and only a limited number of patterns can be created. 
+
+Note that there are methods, which are helpful in generation and classification of these sentiment words automatically, but we do not go deeper into the same. For the more curious, some methods which are used for this purpose are discussed in the works of Turney 2002 which make use of PMI (Point-wise Mutual Information), Dictionary based methods (SentiWordnet), Corpus based Methods (which rely on syntactic of co-occurrence patterns in large text corpora) etc. 
+
+TODO: Refer several related papers here! 
+
+\subsection{Supervised Machine Learning Techniques}
+\subsection{Domain Adaptation}
