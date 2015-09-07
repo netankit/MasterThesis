@@ -85,7 +85,7 @@ Examples of some basic opinion rules, Label Sequential Pattern (LSP) Matching:
 \item Subject {like | adore | want | work} TOPIC $\rightarrow$ positive, e.g. – ``I like the old camera”
 \item Subject {is | are} {great | fantastic | simple | easy} $\rightarrow$ positive, e.g. – ``This camera is fantastic”
 \item TOPIC GAP\_0\_3 NOT work $\rightarrow$ negative, e.g. – ``The new search still does not work”
-\item Please do NOT VB $\rightarrow$ negative,e.g. – ``Please do not roll out this new search!”
+\item Please do NOT VB $\rightarrow$ negative, e.g. – ``Please do not roll out this new search!”
 \item NOT GAP\_0\_3 {want | think | believe | need | get} $\rightarrow$ negative, e.g. – ``I do not want large size pictures in the Gallery window.”
 \item {get | bring | give | put | change} GAP\_0\_3 TOPIC GAP\_0\_3 back $\rightarrow$ positive
 – ``Please put the old search and browse back!”
@@ -93,9 +93,41 @@ Examples of some basic opinion rules, Label Sequential Pattern (LSP) Matching:
 
 Although this method seems to work pretty well, but there is a fundamental limitation in putting it to use at large scale. Any rule based mining methods are computationally expensive. In this case, only a limited number of opinionated words are found and only a limited number of patterns can be created. 
 
-Note that there are methods, which are helpful in generation and classification of these sentiment words automatically, but we do not go deeper into the same. For the more curious, some methods which are used for this purpose are discussed in the works of Turney 2002 which make use of PMI (Point-wise Mutual Information), Dictionary based methods (SentiWordnet), Corpus based Methods (which rely on syntactic of co-occurrence patterns in large text corpora) etc. 
+Note: There are methods, which are helpful in generation and classification of these sentiment words automatically, but we do not go deeper into the same. For the more curious, some methods which are used for this purpose are discussed in the works of Turney 2002 which make use of PMI (Point-wise Mutual Information), Dictionary based methods (SentiWordnet), Corpus based Methods (which rely on syntactic or co-occurrence patterns in large text corpora) etc. 
 
 TODO: Refer several related papers here! 
 
 \subsection{Supervised Machine Learning Techniques}
+So, far we have seen simple count based and rule based methods. Although these methods are simple to comprehend and implement,  they don't scale well for large corpora. So, to achieve an overall improvement, we make use of machine learning. What machine learning allows is to help find the patterns in known set of documents and then apply those patterns learned on new documents. For the case of supervise learning, we require training and testing datasets. And a set of features to represent documents. 
+\newline
+
+In the case of sentiment analysis the final learning goal is to classify sentence into positive, negative  or neutral. A very common way to try out this method is on product reviews dataset. In product reviews, we find that the users review by selecting starts [1,5] or thumbs up or down, where 5 or thumbs up means very good rating and 1 or thumbs down represents very low rating.  This can be used his review as positive or negative and use the same as training data. We can then perform sentiment analysis on those reviews which have not been specifically rated by the user. 
+\newline
+An important step in the process is representing these reviews in such a way that its consistent and they are also understood by computers alike. This begins with something known as "Feature Extraction". Some general methods are discussed below:
+\begin{itemize}
+\item \textbf{Terms and Frequency}
+\begin{itemize}
+\item Unigram and more general n-grams.
+\item Word Position Information
+\item Term Frequency - Inverse Document Frequency (TF-IDF) weighting.
+\end{itemize}
+\item \textbf{Part of Speech Tags:} Adjectives are usually important indicators of subjectivity and opinions. 
+\item \textbf{Syntactic Dependencies:} The syntactic structure of a sentence can be captured by representing the sentence as a \textbf{Syntax Parse Tree}. See~\autoref{fig:parsetree}. 
+
+\begin{figure}[htb]
+  \centering
+  \includegraphics{figures/2_parsetree1}
+  \caption[Parse Tree Emaple]{Parse Tree for sentence "John hit the ball." }\label{fig:parsetree}
+\end{figure}
+\end{itemize} 
+
+Once we have perfromed feature extraction, then the next step is to feed the feature input to the machine learning algorithm. There are a number of very successful and efficient supervised machine learning methods. They are described briefly as follows:
+\begin{itemize}
+\item \textbf{Na\"{i}ve Bayes:} A simple probabilistic classifier based on applying the Bayes' theorem with strong (naive) independence assumption.
+\item \textbf{Maximum Entropy (ME):}  A probabilistic model that estimates the conditional distribution of the class label
+\item \textbf{Support Vector Machines (SVM)} [Pang et al, EMNLP2002] A representation of the examples as points in space in which support vectors are computed to provide a best division of points/examples into categories
+\item \textbf{Logistic Regression (LR) Model} [Pang \& Lee, ACL 2005] A LR model predicts the classes from a set of variables that may be continuous, discrete, or a mixture.
+\end{itemize}
+
+Since, the topics of this work is focused on exploring unsupervised word representations learned via deep learning and its application to the problem of sentiment analysis, we will not expand this discussion further.
 \subsection{Domain Adaptation}
