@@ -40,7 +40,7 @@
     </bcf:option>
     <bcf:option type="singlevalued">
       <bcf:key>labelalpha</bcf:key>
-      <bcf:value>1</bcf:value>
+      <bcf:value>0</bcf:value>
     </bcf:option>
     <bcf:option type="multivalued">
       <bcf:key>labelnamespec</bcf:key>
@@ -121,7 +121,7 @@
     </bcf:option>
     <bcf:option type="singlevalued">
       <bcf:key>sortscheme</bcf:key>
-      <bcf:value>anyt</bcf:value>
+      <bcf:value>nty</bcf:value>
     </bcf:option>
     <bcf:option type="singlevalued">
       <bcf:key>uniquelist</bcf:key>
@@ -319,6 +319,7 @@
     <bcf:option>doi</bcf:option>
     <bcf:option>eprint</bcf:option>
     <bcf:option>related</bcf:option>
+    <bcf:option>subentry</bcf:option>
   </bcf:optionscope>
   <bcf:optionscope type="PER_TYPE">
     <bcf:option>alphaothers</bcf:option>
@@ -871,13 +872,10 @@
     <bcf:sort order="1">
       <bcf:sortitem order="1">presort</bcf:sortitem>
     </bcf:sort>
-    <bcf:sort order="2">
-      <bcf:sortitem order="1">labelalpha</bcf:sortitem>
-    </bcf:sort>
-    <bcf:sort order="3" final="1">
+    <bcf:sort order="2" final="1">
       <bcf:sortitem order="1">sortkey</bcf:sortitem>
     </bcf:sort>
-    <bcf:sort order="4">
+    <bcf:sort order="3">
       <bcf:sortitem order="1">sortname</bcf:sortitem>
       <bcf:sortitem order="2">author</bcf:sortitem>
       <bcf:sortitem order="3">editor</bcf:sortitem>
@@ -885,15 +883,15 @@
       <bcf:sortitem order="5">sorttitle</bcf:sortitem>
       <bcf:sortitem order="6">title</bcf:sortitem>
     </bcf:sort>
+    <bcf:sort order="4">
+      <bcf:sortitem order="1">sorttitle</bcf:sortitem>
+      <bcf:sortitem order="2">title</bcf:sortitem>
+    </bcf:sort>
     <bcf:sort order="5">
       <bcf:sortitem order="1">sortyear</bcf:sortitem>
       <bcf:sortitem order="2">year</bcf:sortitem>
     </bcf:sort>
     <bcf:sort order="6">
-      <bcf:sortitem order="1">sorttitle</bcf:sortitem>
-      <bcf:sortitem order="2">title</bcf:sortitem>
-    </bcf:sort>
-    <bcf:sort order="7">
       <bcf:sortitem order="1" pad_side="left" pad_width="4" pad_char="0">volume</bcf:sortitem>
       <bcf:sortitem order="2">0000</bcf:sortitem>
     </bcf:sort>
@@ -2237,20 +2235,33 @@
     <bcf:datasource type="file" datatype="bibtex">bibliography/literature.bib</bcf:datasource>
   </bcf:bibdata>
   <bcf:section number="0">
-    <bcf:citekey order="1">latex</bcf:citekey>
+    <bcf:citekey order="1">deng</bcf:citekey>
+    <bcf:citekey order="2">NNFirst:McCull</bcf:citekey>
+    <bcf:citekey order="3">NNFirst:Rose</bcf:citekey>
+    <bcf:citekey order="4">NNFirst:Werbos</bcf:citekey>
+    <bcf:citekey order="5">ffwdnn</bcf:citekey>
+    <bcf:citekey order="6">naturearticle</bcf:citekey>
+    <bcf:citekey order="7">learnkernels</bcf:citekey>
+    <bcf:citekey order="8">bengio1</bcf:citekey>
+    <bcf:citekey order="9">bengio2</bcf:citekey>
+    <bcf:citekey order="10">hinton1</bcf:citekey>
+    <bcf:citekey order="11">bottou</bcf:citekey>
+    <bcf:citekey order="12">mikolov1</bcf:citekey>
+    <bcf:citekey order="13">mikolov2</bcf:citekey>
+    <bcf:citekey order="14">mikolov2</bcf:citekey>
+    <bcf:citekey order="15">morbengio</bcf:citekey>
+    <bcf:citekey order="16">gutmann</bcf:citekey>
+    <bcf:citekey order="17">glove</bcf:citekey>
   </bcf:section>
-  <bcf:sortlist section="0" name="anyt" type="entry" sortscheme="anyt">
+  <bcf:sortlist section="0" name="nty" type="entry" sortscheme="nty">
   <bcf:sorting>
     <bcf:sort order="1">
       <bcf:sortitem order="1">presort</bcf:sortitem>
     </bcf:sort>
-    <bcf:sort order="2">
-      <bcf:sortitem order="1">labelalpha</bcf:sortitem>
-    </bcf:sort>
-    <bcf:sort order="3" final="1">
+    <bcf:sort order="2" final="1">
       <bcf:sortitem order="1">sortkey</bcf:sortitem>
     </bcf:sort>
-    <bcf:sort order="4">
+    <bcf:sort order="3">
       <bcf:sortitem order="1">sortname</bcf:sortitem>
       <bcf:sortitem order="2">author</bcf:sortitem>
       <bcf:sortitem order="3">editor</bcf:sortitem>
@@ -2258,15 +2269,15 @@
       <bcf:sortitem order="5">sorttitle</bcf:sortitem>
       <bcf:sortitem order="6">title</bcf:sortitem>
     </bcf:sort>
+    <bcf:sort order="4">
+      <bcf:sortitem order="1">sorttitle</bcf:sortitem>
+      <bcf:sortitem order="2">title</bcf:sortitem>
+    </bcf:sort>
     <bcf:sort order="5">
       <bcf:sortitem order="1">sortyear</bcf:sortitem>
       <bcf:sortitem order="2">year</bcf:sortitem>
     </bcf:sort>
     <bcf:sort order="6">
-      <bcf:sortitem order="1">sorttitle</bcf:sortitem>
-      <bcf:sortitem order="2">title</bcf:sortitem>
-    </bcf:sort>
-    <bcf:sort order="7">
       <bcf:sortitem order="1" pad_side="left" pad_width="4" pad_char="0">volume</bcf:sortitem>
       <bcf:sortitem order="2">0000</bcf:sortitem>
     </bcf:sort>

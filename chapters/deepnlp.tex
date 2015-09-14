@@ -1,7 +1,199 @@
-\chapter{Deep Learning and NLP: Word Representations and Language Modelling}\label{chapter:deepnlp}
-
+\chapter{Deep Learning and NLP: Distributed Representations and Language Modelling}\label{chapter:deepnlp}
+Most, of the current Deep Learning research in NLP is focused on representation learning. By that, we mean that we represent our word, phrase or a sentence as a series of numerical values or a vector in a given vector subspace, which somehow captures the representation. This is an extensive area of research and the roots are based on the concept of Language Modeling.  
 \section{Language Modelling}
+A language model is a probabilistic model that assigns probabilities to any sequence of words. Such as: 
+\begin{center}
+\textit{p(${w}_{1}$, ... , ${w}_{T}$)}
+\end{center}
+Language modeling is the task of learning a language model that assigns high probabilities to well formed sentences. We take into consideration: nth order Markov assumption, where we assume that the ${i}^{th}$ word was generated based only on the n-1 previous words. It plays a crucial role in speech recognition and machine translation systems. 
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[height=25mm,  width=80mm]{figures/4_languagemodellingex.png}
+  \caption[Language Modeling Example]{Translation of a Hindi language Sentence to English language }
+  \label{languagemodellingex}
+\end{figure}
+
+Consider the example in \autoref{languagemodellingex}. We can see that the Hindi language sentence can be translated in two different ways. First, \textit{A good boy} and second,  \textit{A boy good}. What a good language model will tell us that the first one is the correct and more generally used form of the sentence. This is the power and importance of language modeling and is in the heart of all the current unsupervised natural language processing machine learning algorithmic tasks.
+
+\subsection{Language Modelling using Ngrams}
+
+An N-gram is defined as a sequence of n-words. For example:
+
+\textbf{unigrams} (n=1): “is’’, ‘‘a’’, ‘‘sequence’’, etc.
+
+\textbf{bigrams} (n=2): [‘‘is’’, ‘‘a’’ ], [‘‘a’’, ‘‘sequence’’ ], etc.
+
+\textbf{trigrams} (n=3): [‘‘is’’, ‘‘a’’, ‘‘sequence’’], [ ‘‘a’’, ‘‘sequence’’, ‘‘of’’], etc.
+
+The \textbf{n-gram models} estimate the conditional from n-grams counts.
+
+\begin{center}
+$P({w}_{t} | {w}_{t - (n-1)}  , ...... , {w}_{t-1}) = \frac{count({w}_{t - (n-1)}  , ...... , {w}_{t-1}, {w}_{t} )}{count({w}_{t - (n-1)}  , ...... , {w}_{t-1})}$
+
+\end{center}
+The counts are obtained from a training corpus (a data-set of word text)
+
+We want the value of \textbf{n} to be large, for the model to be realistic. But, for large values of \textbf{n}, it is likely that a given n-gram will not have been observed in the training corpora. Smoothing helps but only partially!
+
+\subsection{Word Representations}
+In context of current problem, we use usupervised deep learning techniques, to learn a word representation C(w) which is a continuous vector and is both syntactically and semantically similar. 
+More precisely, we learn a continuous representation of words and would like the distance $||C(w)-C(w’)||$ to reflect meaningful similarity between words \textbf{w} and \textbf{w’}.
+
+Chiefly, we explore the following word representations: Word2Vec, Polyglot, GloVe and their concatenated combinations along with Bag of Words representation and compare their results for the task of sentiment analysis.
+\newline
+
+A traditional view of the word representation is the \textbf{bag of words} or \textbf{one-hot vector} representation for the word. In this model, a text (such as a sentence or a document) is represented as the bag (multi-set) of its words, disregarding grammar and even word order but keeping multiplicity. Example: Suppose we have two documents D1 and D2
+\newline
+
+\textbf{D1:} \textit{John likes to watch movies. Mary likes movies too.}
+\newline
+
+\textbf{D2:} \textit{John also likes to watch football games.}
+\newline
+
+\textbf{Vocabulary \{Word : Index\}}
+\newline
+
+{   "John": 1,    "likes": 2,     "to": 3,     "watch": 4,     "movies": 5,     "also": 6,     "football": 7,     "games": 8,     "Mary": 9,     "too": 10 }
+\newline
+
+There are 10 distinct words and using the indexes of the Vocabulary , each document is represented by a 10-entry vector:
+\newline
+
+\textbf{[1, 2, 1, 1, 2, 0, 0, 0, 1, 1]}
+
+\textbf{[1, 1, 1, 1, 0, 1, 1, 1, 0, 0]}
+\newline 
+
+There is a concern that in this representation, the more frequent words are weighted more than less frequent words. So, to normalize the weights across documents another representation called TF-IDF (Term Frequency - Inverse Document Frequency) is introduced.The main cause of concern with BOW and TF-IDF representation is they don't make the use of contextuality of words in the corpus. Thus, there is no way of distinguishing the order of the words correctly through this vector representation. A more recent view on this is taken through neural language modeling and it brings forward a new concept known as \textbf{Word Embeddings}. On the contrary to the one-hot representation, they build on a concept of \textbf{Distributed Representations}.
+\newline
+
+Originally, word embeddings were introduced by Bengio et al., ~\parencite{bengio1} ~\parencite{bengio2} a few years before the discussed 2006 deep learning renewal, at a time when neural networks were not that popular. Although, the idea of distributed representations for symbols is much more older, as proposed by Hinton et. al.~\parencite{hinton1}  
+
+A \textbf{word embedding} \textit{W} : words $\Rightarrow {R}^{n}$ is a paramaterized function mapping words in some language to high-dimensional vectors (150 - 600 dimensions). For example, we might find:
+
+W(‘parrot") = (0.3, -0.5, 0.7, ...)
+
+W(‘‘carrot") = (0.0, 0.6, -0.1, ...)
+\newline
+
+Typically, the function is a lookup table, parameterized by a matrix, $\theta$, with a row for each word: ${W}_{\theta}({w}_{n})={\theta}_{n}$. W is first initialized randomly for each word. When we train the word vector matrix, it learns to have meaningful vectors in order to perform some task.
+\newline
+
+For example, we can train a neural network to predict whether a 5-GRAM (sequence of five words) is correct or 'valid'.  We can start with 5-grams from Wikipedia corpus (Ex.. “plane is going to fly”) and then corrupt half of them by switching a word with a random word (eg. “plane is drunk to fly”), thus, almost certainly making our corrupted 5-gram absolute nonsense.The neural network we train will feed each word in the 5-gram through W to get a vector representing it as intermediate output and feed those intermediate results into another layer say 'L' which tries to predict if the 5-gram is ‘valid’ or ‘corrupt.’~\parencite{bottou} We would obtain something like:
+\newline
+
+L(W("plane"), W(‘‘is"), W(‘‘going"), W(‘‘to"), W(‘‘fly"))=1
+\newline
+
+L(W("plane"), W(‘‘is"), W(‘‘drunk"), W(‘‘to"), W(‘‘fly"))=0
+\newline
+
+In order to predict these values accurately, the network needs to learn good parameters for both W and L. This is accomplished through back-propagation, which we have already covered earlier.
+\newline
+
+An interesting side effect which is observed, with these word vectors, is when trained on a very large corpus like Google News, the vectors for days like Tuesday and Wednesday fall close to one another in high dimensional space.  It's not just limited to days, but also gender, where the same gender words fall in a certain cluster group and difference between the tow gender entities is captured across relations. For Example:
+\begin{center}
+\textit{v("king") - v("queen") = v("man") - v("woman")}
+\end{center}
+These are interesting relationships which are somehow giving the sense that they capture the semantic similarity in vector space. Thus, with such results, the entire field of Deep Learning and NLP looks really fascinating. Next, we will discuss some of the recent methods, which have contributed strongly to this discussion.
+
 \section{Word2Vec}
-\section{Glove}
+Mikolov et. al. proposed two novel architectures~\autoref{w2vmodelarch} ~\parencite{mikolov1}~\parencite{mikolov2}  for computing continuous vector representations of words from very large datasets. They are:
+\begin{itemize}
+\item Continous Bag of Words (cbow)
+\item Continous Skip Gram (skip)
+\end{itemize}
+
+\begin{figure}[ht!]
+	\centering
+		\includegraphics[height=65mm,  width=100mm]{figures/4_languagemodelnn.png}
+		\caption[Word2Vec Neural Network Model]{Word2Vec Neural Network Language Model}
+			\label{languagemodelnn}
+\end{figure}
+
+
+Word2Vec focuses on distributed representations learned by neural networks~\autoref{languagemodelnn}.  The N-previous words are encoded using 1-of-V hot-vector coding. The words are then projected by a linear operation on the projection layer. Softmax function is used at the output layer to ensure that 0 < = p < = 1. All models are trained and weights are learned using stochastic gradient descent and back propagation. For all models, the training complexity is proportional to:
+\begin{center}
+ O = E x T x Q,
+ \end{center} 
+Where, E: \# of Training epochs; T = \# Words in Training Set; Q = Defined further for each model architecture. 
+
+\begin{figure}[ht!]
+	\centering
+		\includegraphics[height=65mm,  width=100mm]{figures/4_w2v.png}
+		\caption[Word2Vec Model Architectures]{Word2Vec Model Architectures: CBOW and Skip-Gram}
+			\label{w2vmodelarch}
+\end{figure}
+
+\textbf{CBOW}: Predicts the current word based on the context.
+\begin{itemize}
+\item Similar to feed-forward neural network language model, where the non linear hidden layer is removed and projection layer is shared for all words (not just the projection matrix); thus all words are projected into the same position (their vectors are averaged).
+\item Best performance, by building the log linear classifier with four future and four history words as input, where training criteria is to correctly classify the current (middle) word.
+\end{itemize}
+\textbf{SKIP}: Tries to maximize classification of word based on another word in the same sentence.
+\begin{itemize}
+\item We use each current word as input to a log linear classifier with continuous projection layer and predicts words within a certain range before and after current word.
+\end{itemize}
+
+Example: The analogy “\textbf{king is to queen as man is to woman}” should be encoded in the vector space by the vector equation: king - queen = man - woman
+\newline
+
+Among the two, the \textbf{Skip-Gram model seems to perform better} with respect to CBOW model on the Word-analogy task (see example above) for both syntactic and semantic categories.
+
+Mikolov et. al  discuss the skip gram model separately in another work ~\parencite{mikolov2}. The training objective for the skip gram model is to find the word representations that are useful for predicting the surounding words in a sentence or a document. More formally, given a sequence of training words ${w}_{1}, {w}_{2}, {w}_{3}, . . . , {w}_{T}$ , the objective of the Skip-gram model is to maximize the average log probability:
+
+\begin{center}
+$  \frac{1}{T} \sum_{t=1}^{T} \sum_{-c \leq j  \leq c, j \neq 0} log p({w}_{t+j} | {w}_{t})  $
+\end{center}
+
+where \textbf{c} is the size of the training context (which can be a function of the center word wt). Larger \textbf{c} results in more training examples and thus can lead to a higher accuracy, at the expense of the training time. The basic Skip-gram formulation defines $p({w}_{t+j} | {w}_{t})$ using the softmax function:
+\begin{center}
+$p({w}_{O}|{w}_{I}) = \frac{exp({{v'}_{wO}}^{T} {v}_{wI} )}{ \sum_{w=1}^{W} exp({{v'}_{w}}^{T} {v}_{wI} ) }$
+\end{center}
+
+where ${v}_{w}$ and ${v'}_{w}$ are the “input” and “output” vector representations of w, and W is the number of words in the vocabulary. 
+\newline
+
+\textbf{Hierarchical Softmax} ~\parencite{morbengio} is computationally more efficient than the traditional softmax. It uses a binary tree representation of the output layer with the W words as its leaves and for each node explicitly represents the relative probabilities of its child nodes. These define a random walk that assigns probabilities to words. The key advantage here is instead of evaluating W output nodes in the neural network to obtain the probability distribution, only about log(W) nodes are required to be evaluated. More precisely, each word w can be reached by an appropriate path from the root of the tree. Let n(w, j) be the j-th node on the path from the root to w, and let L(w) be the length of this path, so n(w, 1) = root and n(w, L(w)) = w. In addition, for any inner node n, let ch(n) be an arbitrary fixed child of n and let [[x]] be 1 if x is true and -1 otherwise. Then the hierarchical softmax defines $p({w}_{O}|{w}_{I})$ as follows:
+\begin{center}
+$p({w}|{w}_{I}) =  \prod_{j=1}^{L(w)-1}  \sigma  \big( [ n (w, j + 1) = ch (n(w,j))]. {{v'}_{n(w,j)}}^{T} {v}_{wI} \big)$ 
+\end{center}
+Where, $\sigma(x) = 1/ (1 + exp(-x)).$
+\newline
+
+The work also introduces negative sampling. Its a simplified form of Noise Contrastive Estimation (NCE), which was introduced by Gutmann et al. ~\parencite{gutmann}. This simplification can be done as long as the vector representations retain their quality. Negative Sampling is defined by the objective function:
+
+\begin{center}
+$log  \sigma ({{v'}_{{w}_{O}}}^{T} {v}_{{w}_{I}}) +  \sum_{i=1}^{k} {E}_{{w}_{i}  \sim {P}_{n}(w)} [log \sigma ({{-v'}_{{w}_{i}}}^{T} {v}_{{w}_{I}})]$
+\end{center}
+
+which is used to replace every $log P({w}_{O}| {w}_{I})$ term in the skip-gram objective. Thus the task is to distinguish the target word ${w}_{O}$ from draws from the noise distribution ${P}_{n}(w)$ using logistic regression, where there are k negative samples for each data sample. After experimental investigations, the unigram distribution $U{(w)}^{3/4}/Z$ outperformed other uniform and unigram distributions.
+\newline
+
+Moreover, to counter the imbalance between the rare and frequent words, a simple \textbf{subsampling approach} was used, where each word ${w}_{i}$ in th training set is discarded with probability computed by the formula:
+
+$P{w}_{i} = 1 -  \sqrt{\frac{t}{f({w}_{i})}}  $, where the, $f({w}_{i})$ is the frequency of word ${w}_{i}$ and \textbf{ t } is the threshold which is ${10}^{-5}$. The method, aggressively subsamples words whose frequency is greater than \textbf{ t} while preserving the ranking of the frequencies. 
+
+\section{GloVe}
+Pennington et al.~\parencite{glove} introduced GloVe or \textbf{Global Vectors for Word Representations}, a global bi-linear regression model that combines the advantages of the two major model families in the literature: global matrix factorization and local context window methods. The model efficiently leverages statistical information by training only on the nonzero elements in a word-word co-occurrence matrix, rather than on the entire sparse matrix or on individual context windows in a large corpus.
+
+Let the matrix of word-word co-occurrence counts be denoted by X, whose entries  ${X}_{ij}$ tabulate the number of times word j occurs in the context of word i. Let  ${X}_{i}$ = $\sum_{k} {X}_{ik}$ be the number of times any word appears in the context of word i. Finally, let ${P}_{ij}$ = $P(j | i)$ = ${X}_{ij}/{X}_{i}$ be the probability that word j appear in the context of word i.
+
+\begin{figure}[ht!]
+	\centering
+		\includegraphics[height=15mm,  width=75mm]{figures/4_glovetable.png}
+		\caption[Co-occurrence probabilities for target words]{Co-occurrence probabilities for target words ice and steam with selected context words f}
+			\label{glovetable}
+\end{figure}
+
+Now considering two words i = ice and j = steam, The relationship of these words ~\autoref{glovetable} can be examined by studying the ratio of their co-occurrence probabilities with various probe words, k. For words k related to ice but not steam, say k = solid, we expect the ratio ${P}_{ik} /{P}_{jk}$ will be large. Similarly, for words k related to steam but not ice, say k = gas, the ratio should be small. For words k like water or fashion, that are either related to both ice and steam, or to neither, the ratio should be close to one. As compared to raw probabilities, the ratio is better able to distinguish relevant words (solid and gas) from irrelevant words (water and fashion) and it is also better able to discriminate between the two relevant words.
+
+As the ratio ${P}_{ik} /{P}_{jk}$ depends on three words i, j and k, the most general model takes the form:
+\begin{center}
+$F({w}_{i},{w}_{j},{\tilde{w}}_{k}) = \frac{{P}_{ik}}{{P}_{jk}}$
+\end{center}
+
 \section{Polyglot}
 \section{Paragraph Vectors}
