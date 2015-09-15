@@ -93,7 +93,7 @@ Examples of some basic opinion rules, Label Sequential Pattern (LSP) Matching:
 
 Although this method seems to work pretty well, but there is a fundamental limitation in putting it to use at large scale. Any rule based mining methods are computationally expensive. In this case, only a limited number of opinionated words are found and only a limited number of patterns can be created. 
 
-Note: There are methods, which are helpful in generation and classification of these sentiment words automatically, but we do not go deeper into the same. For the more curious, some methods which are used for this purpose are discussed in the works of Turney 2002 which make use of PMI (Point-wise Mutual Information), Dictionary based methods (SentiWordnet), Corpus based Methods (which rely on syntactic or co-occurrence patterns in large text corpora) etc. 
+Note: There are methods, which are helpful in generation and classification of these sentiment words automatically, but we do not go deeper into the same. For the more curious, some methods which are used for this purpose are discussed in the works of Turney ~\parencite{ch1:turney} which make use of PMI (Point-wise Mutual Information), Dictionary based methods (SentiWordnet)~\parencite{sentiwn}, Corpus based Methods (which rely on syntactic or co-occurrence patterns in large text corpora) etc. 
 
 TODO: Refer several related papers here! 
 
@@ -117,7 +117,7 @@ An important step in the process is representing these reviews in such a way tha
 \begin{figure}[htb]
   \centering
   \includegraphics{figures/2_parsetree1}
-  \caption[Syntactic Parse Tree Example]{Parse Tree for sentence "John hit the ball." }\label{fig:parsetree}
+  \caption[Syntactic Parse Tree Example]{Parse Tree for sentence "John hit the ball."\footnotemark \footnotetext{\url{https://upload.wikimedia.org/wikipedia/commons/5/54/Parse_tree_1.jpg}} }\label{fig:parsetree}
 \end{figure}
 \end{itemize} 
 
@@ -125,8 +125,8 @@ Once we have performed feature extraction, then the next step is to feed the fea
 \begin{itemize}
 \item \textbf{Na\"{i}ve Bayes:} A simple probabilistic classifier based on applying the Bayes' theorem with strong (naive) independence assumption.
 \item \textbf{Maximum Entropy (ME):}  A probabilistic model that estimates the conditional distribution of the class label
-\item \textbf{Support Vector Machines (SVM)} [Pang et al, EMNLP 2002] A representation of the examples as points in space in which support vectors are computed to provide a best division of points/examples into categories
-\item \textbf{Logistic Regression (LR) Model} [Pang \& Lee, ACL 2005] A LR model predicts the classes from a set of variables that may be continuous, discrete, or a mixture.
+\item \textbf{Support Vector Machines (SVM)} [Pang et al, \parencite{ch1:pang}] A representation of the examples as points in space in which support vectors are computed to provide a best division of points/examples into categories
+\item \textbf{Logistic Regression (LR) Model} [Pang \& Lee,\parencite{ch2:panglee}] A LR model predicts the classes from a set of variables that may be continuous, discrete, or a mixture.
 \end{itemize}
 
 Since, the topics of this work are focused on exploring unsupervised word representations learned via deep learning and its application to the problem of sentiment analysis, we will not expand this discussion further.
@@ -146,13 +146,13 @@ When sentiment analysis is performed in real life, a common issue arises. A clas
 \end{itemize}
 \end{enumerate}
 
-A common way to mitigate this issue is \textbf{Domain Adaptation}. It's actually a well studied problem. [Aue \& Gamon, RANLP 2005; Blitzer et al, ACL 2007; Yang et al, TREC 2006]. Some of the basic steps involved when perfroming domain adaptation is as follows:
+A common way to mitigate this issue is \textbf{Domain Adaptation}. It's actually a well studied problem. [Aue \& Gamon~\parencite{ch2:auegamon}; Blitzer et al,~\parencite{BlitzerPaper:2007}; Yang et al,\parencite{ch2:yang}]. Some of the basic steps involved when perfroming domain adaptation is as follows:
 \begin{enumerate}
 \item Use labeled data from one domain and unlabeled data from both source the target domain and general opinion words as features
 \item Choose a set of pivot features which occur frequently in both domains
 \item Model correlations between the pivot features and all other features by training linear pivot predictors to predict occurrences of each pivot in the unlabeled data from both domains
 \end{enumerate}
-Recently, Jochim and Sch{\"u}tze  showed improvement in citation polarity classification using product reviews, by making use of Domain Adaptation, their out-of domain data was Amazon's Product Review data-set.
+Recently, Jochim and Sch{\"u}tze \parencite{ch2:jochim} showed improvement in citation polarity classification using product reviews, by making use of Domain Adaptation, their out-of domain data was Amazon's Product Review data-set.
 
 \section{Sentence-Level Sentiment Analysis}
 Document level sentiment analysis is too coarse for most applications,\Smiley{} or, \Frowny{}? Example:
@@ -167,7 +167,7 @@ Document level sentiment analysis is too coarse for most applications,\Smiley{} 
 It is important to highlight that at sentence level, the syntax becomes of paramount importance. Hence we begin next with understanding syntactic patterns.
 
 \subsection{Syntactic Pattern Learning}
-In thier 2003 work, Riloff and Wiebe presented a bootstrapping process that learns linguistically rich extraction patterns for subjective (opinionated) expressions. The proposed process can be explained briefly as follows: 
+In thier 2003 work, Riloff and Wiebe~\parencite{ch2:reiloff} presented a bootstrapping process that learns linguistically rich extraction patterns for subjective (opinionated) expressions. The proposed process can be explained briefly as follows: 
 \begin{enumerate}
 \item Use high precision but low recall classifiers to automatically identify some subjective and objective sentences.
 \begin{itemize}
@@ -183,7 +183,7 @@ In thier 2003 work, Riloff and Wiebe presented a bootstrapping process that lear
 \end{enumerate}  
 
 \section{Attribute - Level Sentiment Analysis}
-We have seen from some of the reviews example presented earlier that a positive or a negative labeleed document doesn't imply that the author likes or dislikes all attributes of the product. Thus, an interesting area of study is to analyze what attribute is most positively rated and which one is most negatively rated in a given product review. Also, in a general opinion corpus about a product, another interesting study is the percentage of positive to negative review for a given attribute. This is useful to determine, what exactly about the product do the people love or hate about the product. These attribute can be anything from product properties, the individual components or important topics etc. 
+We have seen from some of the reviews example presented earlier that a positive or a negative labeled document doesn't imply that the author likes or dislikes all attributes of the product. Thus, an interesting area of study is to analyze what attribute is most positively rated and which one is most negatively rated in a given product review. Also, in a general opinion corpus about a product, another interesting study is the percentage of positive to negative review for a given attribute. This is useful to determine, what exactly about the product do the people love or hate about the product. These attribute can be anything from product properties, the individual components or important topics etc. 
 
 \begin{figure}[htb]
   \centering

@@ -1,6 +1,69 @@
 	\chapter{Concatenated Word Representations for Sentiment Classification}\label{chapter:wordrepresentation}
 
-	\section{Problem}
-	\section{Experiments}
-	\section{Observations}
-	\section{Result}
+\section{Problem}
+We aim to utilize four different word representations, \textbf{Bag of words} \cite{Bow:1954}, \textbf{Word2vec} \parencite{mikolov1}, \textbf{Polyglot} \parencite{polyglot:2013:ACL-CoNLL} and \textbf{Glove} \parencite{glove}. The latter three make use of semantic word vector spaces and generate effective sentence or phrase level representations. We discuss various concatenated settings and strategies to extract sentence vectors from word vectors and compare results. We also explore use of in-domain, out of domain and mixed domain data to train word vectors. Our overall aim is to classify movie review phrases and sub-phrases, into five sentiment classes \textit{viz,} positive, negative, neutral, slightly positive and slightly negative. The motivation of the work is a Kaggle contest\footnotemark \footnotetext{\url{https://www.kaggle.com/c/sentiment-analysis-on-movie-reviews}}.
+
+\section{Experiments - Word Vector Concatenation}
+	For the experiments, we also used the traditional Bag of words (\textbf{B}) representation, along with the above mentioned representations: Word2Vec-skip (\textbf{W}), Polyglot (\textbf{P}) and Glove (\textbf{G}) and concatenated word vectors. We get following set configurations:
+
+\begin{itemize}
+	\itemsep-0.5em 
+	\item \textbf{Single vectors}: [B]; [W]; [P]; [G].
+	\item \textbf{Double vector concatenation}: [B$|$W]; [W$|$P]; [P$|$B]; [W$|$G]; [P$|$G]; [B$|$G]
+	\item \textbf{Triple vector concatenation}: [B$|$W$|$P]; [W$|$P$|$G]; [P$|$B$|$G]; [B$|$W$|$G]
+	\item \textbf{All vectors concatenation}: [B$|$W$|$P$|$G]
+\end{itemize}
+
+Our experimental setup consisted of a single 64-bit Intel Xeon based server with 24 virtualized (12 dedicated) cores via hyper-threading and 64 GB RAM, running Ubuntu Linux 12.04.1. We choose three different domains: \textbf{In-domain} data originally from Rotten Tomatoes and provided by Kaggle\footnotemark \footnotetext{\url{https://www.kaggle.com/c/sentiment-analysis-on-movie-reviews/data}} consisting of 156,060 phrases for training with each having one of five sentiment labels: positive (0), slightly positive (1), neutral (2), slightly negative (3) and negative (4) and 66,292 test phrases; \textbf{Out-domain} data comprising of Google News text\footnotemark \footnotetext{\url{http://www.statmt.org/wmt14/training-monolingual-news-crawl/news.2012.en.shuffled.gz}} (2.7 GB) for training word vectors.; \textbf{Mixed-Domain} data with domain adaptation comprising: Amazon Multi-domain sentiment dataset\footnotemark \footnotetext{\url{http://www.cs.jhu.edu/~mdredze/datasets/sentiment/}} \parencite{BlitzerPaper:2007} (Books and DVD reviews) + Google News (Out-Domain) + Kaggle Movie Reviews (In-Domain training reviews), total 3.6 GB in size. 
+\newline
+
+To \textbf{train word vectors}, we lower-case the phrases and train using off the shelf trainers available for Word2Vec, Polyglot and Glove, with word vector dimensionality of 100, 64 and 50.  For \textbf{extracting phrase vectors} from word vectors, we propose two strategies. \textit{First}, substitute word counts in bag of words representation with the average of word vectors obtained via neural network models for a  given word. \textit{Second}, a phrase vector can also be computed by taking a centroid of all the word vectors within a given phrase. We also experimented with the effect of removal of commonly occurring stop words in English, since some of our training samples had only a stop word in them. For bag of words, we experimented with both count-based and tf-idf based representations and interestingly found that for our use-case, the count based representation worked better. Thus, we report results using the same. Once all 15 data-sets are generated for respective domains, the phrase vectors are normalized using L2 normalization available in scikit-learn's \textit{preprocessing} module. Next, we use these phrase vectors as input to a \textit{liblinear} \parencite{LibLinear:2008} based SVM implementation provided by sci-kit \parencite{Scikit:2011}.
+\newline
+
+It is interesting to point here that, initially, the test, development and training data sets were divided for computing the SVM hyper-parameters which best fit the data, using grid search cross validation. We achieved different results for the randomized test data folds (taken as a subset of train data) during cross validation. Hence, other measures like the F-score are not reported in the results. Rather, only the accuracy measures are reported, which have only been computed by submitting to Kaggle system thus exhibiting reproducibility of  results. For the same reason, we have shared the code and the data as well. Also, some other experiments revealed the use of random forests with ensemble and neural network based classifier, can improve the results marginally, but on the contrary took a long time to train. The lib-linear version of SVM was eventually adopted for its computational performance improvement over other methods, which reduced the training time from an hour to few minutes. This was necessary because we were conducting a total of 75 experiments in this work.
+\newline
+
+Finally, sentiment labels over test set are predicted and written in pre-defined output format. To \textbf{evaluate the results}, we submit obtained predicted output for phrases in test set to Kaggle Server\footnotemark \footnotetext{\url{https://www.kaggle.com/c/sentiment-analysis-on-movie-reviews/submit}}, which gives overall accuracy of prediction over test set. We have provided related code and data as supplementary packages\footnotemark \footnotetext{\url{https://bit.ly/icon2015data}}.
+
+\section{Observations}
+\begin{table*}[htb]
+\small
+\captionsetup{font=small,belowskip=1pt,aboveskip=1pt}
+\centering
+\begin{tabular}{l|l|l|l|l|l|l}
+\hline
+{\color[HTML]{000000} {\bf S. No.}} & {\color[HTML]{000000} {\bf Representation}} & {\color[HTML]{000000} {\bf Indomain$^{_{*}}$}} & {\color[HTML]{000000} {\bf Outdomain$^{_{*}}$}} &{\color[HTML]{000000} {\bf Indomain$^{_{\o}}$}} & {\color[HTML]{000000} {\bf Indomain$^{_{\#}}$}} & {\color[HTML]{000000} {\bf Mixdomain$^{_{\#}}$}} \\ \hline
+1 & [B] & 0.61175 & 0.60844 & 0.61175 & \textbf{0.61175} & \textbf{0.60858} \\ \hline
+2 & [W] & 0.60535 & 0.61140 & 0.51789 & 0.51789 & 0.51789 \\ \hline
+3 & [P] & 0.60516 & 0.61413 & 0.51789 & 0.51789 & 0.51789 \\ \hline
+4 & [G] & 0.59959 & 0.60448 & 0.51780 & 0.51762 & 0.51762 \\ \hline
+5 & {[}B$|$W{]} & 0.62155 & 0.62116 & \textbf{0.61244} & \textbf{0.60988} & 0.58802 \\ \hline
+6 & {[}W$|$P{]} & 0.61470 & 0.62201 & 0.51789 & 0.51789 & 0.51789 \\ \hline
+7 & {[}P$|$B{]} & 0.62172 &  0.62483 & 0.61178 & 0.60840 & \textbf{0.60648} \\ \hline
+8 & {[}W$|$G{]} & 0.61472 & 0.61905 & 0.51780 & 0.51780 & 0.51780 \\ \hline
+9 & {[}P$|$G{]} & 0.61569 & 0.62018 & 0.51780 & 0.51788 & 0.51788 \\ \hline
+10 & {[}B$|$G{]} & 0.62226 & 0.61697 & 0.61182 & 0.44686 & 0.45545 \\ \hline
+11 & {[}B$|$W$|$P{]} & \textbf{0.62276} & \textbf{0.62498} & 0.61240 & 0.60368 & 0.56937 \\ \hline
+12 & {[}W$|$P$|$G{]} & 0.61896 & 0.62237 & 0.51780 & 0.51789 & 0.51789 \\ \hline
+13 & {[}P$|$B$|$G{]} & \textbf{0.62353} & \textbf{0.62386} & \textbf{0.61243} & 0.52365 & 0.52717 \\ \hline
+14 & {[}B$|$W$|$G{]} & 0.62249 & 0.62143 & 0.61175 & 0.52472 & 0.56241 \\ \hline
+15 & {[}B$|$W$|$P$|$G{]} & 0.62169 & 0.62348 & 0.61235 & 0.53935 & 0.56044 \\ \hline
+\end{tabular}
+
+\caption{\textit{Accuracy scores: Substituting word counts in BOW with the average of word vectors obtained via neural network models for a given word for in-domain and out-domain (\textbf{*}); Phrase vector computed from a centroid of all the word vectors within a given phrase; not removing (\textbf{\o}) stop words and after removing stop words (\textbf{\#}) for in-domain and mixed-domain}}
+\label{table:phraserep}
+\end{table*}
+	
+\section{Result}
+Accuracy scores results, for first strategy (*), when BOW based word counts are substituted by average word vector scores and second strategy (\o , \#), when word vector centroids are computed for each phrase, are tabulated as shown in ~\autoref{table:phraserep}. The two best results for each case are also highlighted. An interesting thing to note is, how many of our basic representations are exactly equal to the benchmark result\footnotemark \footnotetext{\url{https://www.kaggle.com/c/sentiment-analysis-on-movie-reviews/leaderboard}} published on Kaggle which is: 0.51789. and our best result shows overall improvement of 11\%. Additionally, to compare our results with state of the art results, we also trained an RNTN model on in-domain data using Stanford's CoreNLP pipeline \parencite{CoreNLP:2014} to get an overall accuracy of 0.64518 on test data. This is fairly close to our best result of 0.62498, with RNTN recording a minor 2\% additional accuracy. Although, it can be argued that the first strategy looses all the possible information gained from learned vectors, as we still employ a BOW model, but on close observation the result of 0.61244 [B$|$W, Indomain$^{_{\o}}$] clearly indicates our centroid based approach performs fairly well. The effect of removal of stop words between Indomain$^{_{\o}}$ and Indomain$^{_{\#}}$, where both are centroid based representations is pretty evident as the accuracy decreases in general. Domain adapted training is effective for the In- and out-domain$^{_{*}}$ cases but not for others. In broad view, [P$|$B$|$G] performs the best. Overall training time, for (*) tasks is lesser than (\o , \#) tasks.
+
+\section{Discussion and Future Work}
+In this work, we studied usage of unsupervised word embeddings and their concatenated representations learned using deep neural network based models to efficiently represent a phrase and its sub-phrases. We conclude, that we can substitute our vector concatenation approach with that of RNTN for learning word vector representations. Our approach is more effective as it doesn't require a hand labeled sentiment values at phrase and sub-phrase level to learn word and phrase vector representations. Our work is equally useful in a multi-lingual setting where such corpus is not available. 
+
+We also found that bag-of-word is the best when no combination of vector representation is considered, and combining additional embeddings only improves marginally and requires further investigation for conclusive proofs. One alternative that seems to conclusively beneficial is to keep stop words when combo of word embedding are considered, and that mix domain training may not be beneficial especially when more sophisticated embeddings (other than bag-of-words) are considered. Hence, this work can serve as a good benchmark, for the future design of several sentiment classifiers, which plan to make use of word embeddings. 
+
+Also, we aim to explore work done in area of paragraph vectors \parencite{paragraphvectors} by using concatenated vectors phrase-wise to form more efficient representations at paragraph and document levels. An interesting future work will be to see how these concatenated vectors capture larger reviews, with multiple sentences.
+Application of the concepts to other interesting NLP tasks can also be explored like information retrieval and text summarization.  
+\newline
+
+\textbf{NOTE:} \textit{The following work has been currently submitted for review at 12th International Conference on Natural Language Processing (ICON) 2015, Kerela, India.}
