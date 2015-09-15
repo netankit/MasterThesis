@@ -1,7 +1,7 @@
 \chapter{Sentiment Analysis}\label{chapter:sentiment}
 Till now we have studied about Sentiment Analysis with a general perspective. This chapter starts a more computational view of solving this problem. Before we begin discussing various methods, its important to understand the scope of the problem. 
 \section{Sentiment Analysis Levels}
-The sentiment analysis problem is not a single view problem, rather its can be viewed as multi-level problem. They are discussed as follows:
+The sentiment analysis problem is not a single view problem, rather its can be viewed as multi-level problem~\parencite{ch2:icdmtutorial} . They are discussed as follows:
 \begin{itemize}
 \item \textbf{Document Level: }Identifying if the \textit{document} (product review, blog-post, forum post etc.) expresses opinions and if they do, classifying them as positive, negative or neutral. this takes into account the overall sentiment expressed by the opinion holder for the whole document.  
 \item \textbf{Sentence Level: }Identifying whether a single \textit{sentence} is positive, negative or neutral.
@@ -26,7 +26,7 @@ Positive: wonderful, elegant, amazing
 
 Negative: horrible disgusting poor
 
-Second, Comparative Types, for example: better, worse etc.
+Second, \textbf{Comparative types}, for example: better, worse etc.
 
 \subsection{Counting Opinion Words}
 
@@ -80,7 +80,7 @@ Another method to compute the overall sentiment of a document is through handcra
 \item \textbf{POS Tag:} NN (Noun), VB (Verb), JJ (Adjective), RB (Adverb), IN (preposition) ...
 \end{itemize}
 
-Examples of some basic opinion rules, Label Sequential Pattern (LSP) Matching:
+Examples~\parencite{ch2:icdmtutorial} of some basic opinion rules, Label Sequential Pattern (LSP) Matching:
 \begin{itemize}
 \item Subject {like | adore | want | work} TOPIC $\rightarrow$ positive, e.g. – ``I like the old camera”
 \item Subject {is | are} {great | fantastic | simple | easy} $\rightarrow$ positive, e.g. – ``This camera is fantastic”
@@ -93,12 +93,10 @@ Examples of some basic opinion rules, Label Sequential Pattern (LSP) Matching:
 
 Although this method seems to work pretty well, but there is a fundamental limitation in putting it to use at large scale. Any rule based mining methods are computationally expensive. In this case, only a limited number of opinionated words are found and only a limited number of patterns can be created. 
 
-Note: There are methods, which are helpful in generation and classification of these sentiment words automatically, but we do not go deeper into the same. For the more curious, some methods which are used for this purpose are discussed in the works of Turney ~\parencite{ch1:turney} which make use of PMI (Point-wise Mutual Information), Dictionary based methods (SentiWordnet)~\parencite{sentiwn}, Corpus based Methods (which rely on syntactic or co-occurrence patterns in large text corpora) etc. 
-
-TODO: Refer several related papers here! 
+\textbf{Note: }There are methods, which are helpful in generation and classification of these sentiment words automatically, but we do not go deeper into the same. For the more curious, some methods which are used for this purpose are discussed in the works of Turney ~\parencite{ch1:turney} which make use of PMI (Point-wise Mutual Information), Dictionary based methods (SentiWordnet)~\parencite{sentiwn}, Corpus based Methods (which rely on syntactic or co-occurrence patterns in large text corpora) etc. 
 
 \subsection{Supervised Machine Learning Techniques}
-So, far we have seen simple count based and rule based methods. Although these methods are simple to comprehend and implement,  they don't scale well for large corpora. So, to achieve an overall improvement, we make use of machine learning. What machine learning allows is to help find the patterns in known set of documents and then apply those patterns learned on new documents. For the case of supervise learning, we require training and testing datasets. And a set of features to represent documents. 
+So, far we have seen simple count based and rule based methods. Although, these methods are simple to comprehend and implement,  they don't scale well for large corpora. So, to achieve an overall improvement, we make use of machine learning. What machine learning allows is to help find the patterns in known set of documents and then apply those patterns learned on new documents. For the case of supervised learning, we require training and testing datasets. And a set of features to represent documents. 
 \newline
 
 In the case of sentiment analysis the final learning goal is to classify sentence into positive, negative  or neutral. A very common way to try out this method is on product reviews dataset. In product reviews, we find that the users review by selecting starts [1,5] or thumbs up or down, where 5 or thumbs up means very good rating and 1 or thumbs down represents very low rating.  This can be used his review as positive or negative and use the same as training data. We can then perform sentiment analysis on those reviews which have not been specifically rated by the user. 
